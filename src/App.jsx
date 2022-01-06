@@ -70,6 +70,7 @@ function App() {
                     starredEmails={starredEmails}
                     hideRead={hideRead}
                     setHideRead={setHideRead}
+                    setSelectedEmailId={setSelectedEmailId}
                 />
             </nav>
 

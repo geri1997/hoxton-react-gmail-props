@@ -10,7 +10,7 @@ function InboxList(props) {
             </li>
             <li
                 className={`item ${props.currentTab === "starred" ? "active" : ""}`}
-                onClick={() => setCurrentTab("starred")}
+                onClick={() => props.setCurrentTab("starred")}
             >
                 <span className="label">Starred</span>
                 <span className="count">{props.starredEmails.length}</span>

@@ -1,3 +1,5 @@
+import "./email.css"
+
 function Email(props){
     return <li
                     key={props.index}

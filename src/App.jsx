@@ -5,6 +5,8 @@ import initialEmails from "./data/emails";
 import "./App.css";
 import InboxList from "./components/InboxList";
 import Emails from "./components/Emails";
+import Header from "./components/Header";
+import SingleEmail from "./components/SingleEmail";
 
 const getReadEmails = (emails) => emails.filter((email) => !email.read);
 
@@ -14,13 +16,18 @@ function App() {
     const [emails, setEmails] = useState(initialEmails);
     const [hideRead, setHideRead] = useState(false);
     const [currentTab, setCurrentTab] = useState("inbox");
-    const [searchTerm, setSearchTerm] = useState("")
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedEmailId, setSelectedEmailId] = useState(0);
 
     const unreadEmails = emails.filter((email) => !email.read);
     const starredEmails = emails.filter((email) => email.starred);
 
-    function search(keyword){
-      setSearchTerm(keyword)
+    function search(keyword) {
+        setSearchTerm(keyword);
+    }
+    function displaySingleEmail(emailId) {
+        const email = emails.find((email) => email.id === emailId);
+        return <SingleEmail setSelectedEmailId = {setSelectedEmailId} email={email}/>;
     }
     const toggleStar = (targetEmail) => {
         const updatedEmails = (emails) =>
@@ -43,7 +50,10 @@ function App() {
     };
 
     let filteredEmails = emails;
-    if(searchTerm)filteredEmails=filteredEmails.filter(email=>email.title.toLowerCase().includes(searchTerm.toLowerCase()))
+    if (searchTerm)
+        filteredEmails = filteredEmails.filter((email) =>
+            email.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
     if (hideRead) filteredEmails = getReadEmails(filteredEmails);
 
     if (currentTab === "starred")
@@ -51,26 +61,7 @@ function App() {
 
     return (
         <div className="app">
-            <header className="header">
-                <div className="left-menu">
-                    <svg
-                        className="menu-icon"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
-                    </svg>
-
-                    <img
-                        src="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/logo_gmail_lockup_default_1x_r2.png"
-                        alt="gmail logo"
-                    />
-                </div>
-
-                <div className="search">
-                    <input className="search-bar" onInput={(e)=>search(e.target.value)} placeholder="Search mail" />
-                </div>
-            </header>
+            <Header search={search} />
             <nav className="left-menu">
                 <InboxList
                     currentTab={currentTab}
@@ -81,8 +72,18 @@ function App() {
                     setHideRead={setHideRead}
                 />
             </nav>
+
             <main className="emails">
-                <Emails emails = {filteredEmails} toggleRead = {toggleRead} toggleStar={toggleStar}/>
+                {selectedEmailId === 0 ? (
+                    <Emails
+                        setSelectedEmailId={setSelectedEmailId}
+                        emails={filteredEmails}
+                        toggleRead={toggleRead}
+                        toggleStar={toggleStar}
+                    />
+                ) : (
+                    displaySingleEmail(selectedEmailId)
+                )}
             </main>
         </div>
     );
